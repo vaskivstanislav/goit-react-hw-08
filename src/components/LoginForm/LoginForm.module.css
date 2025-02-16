@@ -1,9 +1,9 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     width: 360px;
-    border: 1px solid #302d2d;
+    /* border: 1px solid #302d2d; */
     padding: 10px;
     border-radius: 4px;
     justify-content: center;
@@ -11,17 +11,17 @@
   
   .label {
     display: flex;
-    gap: 4px;
     flex-direction: column;
   }
   
   .btn {
     width: fit-content;
     justify-content: center;
-    align-self: center;
+    padding: 8px 12px;
+    border-radius: 4px;
   }
   
-  .error {
+  /* .error {
     color: red;
     font-size: 12px;
-  }
+  } */

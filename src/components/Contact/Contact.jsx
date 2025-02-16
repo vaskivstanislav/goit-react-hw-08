@@ -1,30 +1,28 @@
-import { useDispatch } from 'react-redux';
 import s from './Contact.module.css';
-import { deleteContact } from '../../redux/contactsOps';
+import { BiSolidUser } from 'react-icons/bi';
+import { FaPhoneAlt } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/contacts/operations';
 
-const Contact = ({ user }) => {
+const Contacts = ({ id, name, number }) => {
   const dispatch = useDispatch();
-
-  const handleDeleteContactUser = () => {
-    dispatch(deleteContact(user.id));
-  };
-
   return (
     <>
-      <div>
-        <p className={s.contactText}>
-          Name: {user.name.charAt(0).toUpperCase() + user.name.slice(1)}
-        </p>
-        <p className={s.contactText}>Phone: {user.number}</p>
+      <div className={s.wrapper}>
+        <div className={s.svgWrap}>
+          <BiSolidUser />
+          <p className={s.name}>{name}</p>
+        </div>
+        <div className={s.svgWrap}>
+          <FaPhoneAlt />
+          <p className={s.phone}>{number}</p>
+        </div>
       </div>
-      <button
-        className={s.contactBtn}
-        type="button"
-        onClick={handleDeleteContactUser}
-      >
+      <button onClick={() => dispatch(deleteContact(id))} className={s.btn}>
         Delete
       </button>
     </>
   );
 };
-export default Contact;
+
+export default Contacts;

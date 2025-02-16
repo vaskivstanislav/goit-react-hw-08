@@ -1,67 +1,58 @@
-import "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
-import s from "./ContactForm.module.css";
-
-const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(3, "Minimum 3 characters")
-    .max(50, "Maximum 50 characters")
-    .required("Name is required"),
-  number: Yup.string()
-    .matches(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
-    .required("Phone number is required"),
-});
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import s from './ContactForm.module.css';
+import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/contacts/operations';
+import toast from 'react-hot-toast';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-
-  const handleFormSubmit = (values, { resetForm }) => {
-    dispatch(
-      addContact({
-        name: values.name.trim(),
-        number: values.number.trim(),
-      })
-    );
-    resetForm();
+  const initValues = {
+    name: '',
+    number: '',
   };
 
+  const handleSubmit = (values, options) => {
+    const { name, number } = values;
+    if (!name.trim() || !number.trim()) {
+      toast.error('Please fill name and number to add new contact');
+      return;
+    }
+    const newContactData = {
+      name: name.trim(),
+      number: number.trim(),
+    };
+    dispatch(addContact(newContactData));
+    options.resetForm();
+  };
+
+  // Валідація
+  // TODO Прописати стилі для валідації
+  const contactSchema = Yup.object().shape({
+    name: Yup.string().min(3, 'Too short!').max(50, 'Too long!').required('Required'),
+    number: Yup.string().min(3, 'Too short!').max(50, 'Too long!').required('Required'),
+  });
+
   return (
-    <Formik
-      initialValues={{ name: "", number: "" }}
-      validationSchema={validationSchema}
-      onSubmit={handleFormSubmit}
-    >
-      <Form className={s.contactForm}>
-        <label htmlFor="name" className={s.label}>
-          Name
-          <Field
-            id="name"
-            name="name"
-            className={s.formInput}
-            placeholder="Enter name"
-          />
-          <ErrorMessage name="name" component="p" className={s.inputError} />
-        </label>
-
-        <label htmlFor="number" className={s.label}>
-          Phone Number
-          <Field
-            id="number"
-            name="number"
-            className={s.formInput}
-            placeholder="Enter phone number"
-          />
-          <ErrorMessage name="number" component="p" className={s.inputError} />
-        </label>
-
-        <button type="submit" className={s.formBtn}>
-          Add Contact
-        </button>
-      </Form>
-    </Formik>
+    <div>
+      <Formik onSubmit={handleSubmit} initialValues={initValues} validationSchema={contactSchema}>
+        <Form className={s.form}>
+          <label className={s.label}>
+            <span>Name</span>
+            <Field type="text" name="name" />
+            <ErrorMessage name="name" component={'span'} className={s.error} />
+          </label>
+          <label className={s.label}>
+            <span>Number</span>
+            <Field type="phone" name="number" />
+            <ErrorMessage name="number" component={'span'} className={s.error} />
+          </label>
+          <button type="submit" className={s.btn}>
+            Add contact
+          </button>
+        </Form>
+      </Formik>
+    </div>
   );
 };
 
